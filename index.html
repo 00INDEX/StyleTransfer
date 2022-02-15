@@ -10,14 +10,25 @@
         <title>Style Transfer</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+        <link rel="stylesheet" href="https://unpkg.com/muse-ui/dist/muse-ui.css">
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <p>Hello World111</p>
-        <script src="" async defer></script>
+        <div id="app">
+            <span>{{a}}</span>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/muse-ui/dist/muse-ui.js"></script>
+        <script async defer>
+            var data = {a : 1}
+            var app = new Vue({
+                data
+            })
+        </script>
     </body>
 </html>
 
