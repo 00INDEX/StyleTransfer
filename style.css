@@ -1,0 +1,13 @@
+@font-face {
+    font-family: Fangzheng_Cuhei;
+    src: url(./resources/FZCHSJW.TTF);
+}
+
+*{
+    font-family: 'Fangzheng_Cuhei';
+}
+
+#app{
+    width: 100%;
+    height: 100%;
+}

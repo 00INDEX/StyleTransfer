@@ -10,28 +10,99 @@
         <title>Style Transfer</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
-        <link rel="stylesheet" href="https://unpkg.com/muse-ui/dist/muse-ui.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/animate.css@^4.0.0/animate.min.css" rel="stylesheet" type="text/css">
+        <link href="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/quasar.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <div id="app">
-            <mu-container class="">
-                <mu-button color="primary">
-                    测试按钮
-                </mu-button>
-            </mu-container>
+            <q-layout view="hHh lpR fFf">
+                <q-header elevated class="bg-primary text-white">
+                    <q-toolbar class="bg-indigo text-white">
+                        <q-btn flat dense icon="img:./resources/machine_learn.svg"></q-btn>
+                        <q-toolbar-title>
+                            风格迁移
+                        </q-toolbar-title>
+                    </q-toolbar>
+                </q-header>
+                <q-page-container>
+                    <div class="q-pa-md q-gutter-sm column fit no-wrap justify-center">
+                        <q-img class="self-center" src="./resources/nature.jpeg" spinner-color="primary" style="height: 140px; max-width: 150px"></q-img>
+                        <q-file accept="image/*" v-model="image" filled bottom-slots label="点击选择一张图片上传" counter>
+                            <template v-slot:prepend>
+                              <q-icon name="cloud_upload" @click.stop></q-icon>
+                            </template>
+                            <template v-slot:append>
+                              <q-icon name="close" @click.stop="model = null" class="cursor-pointer"></q-icon>
+                            </template>
+                    
+                            <template v-slot:hint>
+                              Field hint
+                            </template>
+                          </q-file>
+                          <span>请从下图中选择一种样式</span>
+                          <div class="row items-start justify-start" q-gutter-md row items-start id="style_box">
+                              <q-btn padding="none" v-for="style in styles" :icon="'img:' + style" size="100px" style="margin-right: 10px; margin-bottom: 10px" @click="change_style"></q-btn>
+                              
+                          </div>
+                    </div>
+                </q-page-container>
+                
+                <q-footer elevated class="bg-grey-8 text-white">
+                    <q-banner class="bg-primary text-white" v-if="show_banner">
+                        请选择一张正确的图片
+                        <template v-slot:action>
+                            <q-btn flat color="white" label="确定" @click="hide_banner"></q-btn>
+                        </template>
+                    </q-banner>
+                    <q-toolbar class="bg-indigo text-white">
+                        <q-btn flat dense icon="img:./resources/github_fill.svg"></q-btn>
+                        <q-toolbar-title>
+                            Zhang Shuo
+                        </q-toolbar-title>
+                    </q-toolbar>
+                </q-footer>
+            </q-layout>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://unpkg.com/muse-ui/dist/muse-ui.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/quasar.ie.polyfills.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/quasar.umd.modern.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/lang/zh-hans.umd.min.js"></script>
         <script async defer>
-            var data = {a : 1}
+            Quasar.lang.set(Quasar.lang.zhHans)
+
+            var data = {
+                visible : false,
+                image: null,
+                styles: ['./resources/styles/candy.jpg',
+                './resources/styles/composition_vii.jpg',
+                './resources/styles/feathers.jpg',
+                './resources/styles/la_muse.jpg',
+                './resources/styles/mosaic.jpg',
+                './resources/styles/starry_night.jpg',
+                './resources/styles/the_scream.jpg',
+                './resources/styles/udnie.jpg',
+                './resources/styles/wave.jpg'],
+                show_banner: false
+            }
             var app = new Vue({
                 el: '#app',
-                data
+                data,
+                methods: {
+                    show: function(){
+                        this.visible = true
+                    },
+                    change_style: function(){
+                        this.show_banner = true
+                    },
+                    hide_banner: function(){
+                        this.show_banner = false
+                    }
+                }
             })
         </script>
     </body>
