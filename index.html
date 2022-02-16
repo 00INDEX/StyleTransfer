@@ -46,8 +46,8 @@
                           </q-file>
                           <span>②请从下图中选择一种样式</span>
                           <div class="row items-start justify-start" q-gutter-md row items-start id="style_box">
-                              <q-btn padding="none" v-for="style in styles" :icon="'img:' + style" size="50px" 
-                              style="margin-right: 10px; margin-bottom: 10px" @click="upload_image"></q-btn>
+                              <q-btn padding="none" v-for="style in styles" :icon="'img:' + style_path + style" size="50px" 
+                              style="margin-right: 10px; margin-bottom: 10px" @click="upload_image(style)"></q-btn>
                               
                           </div>
                     </div>
@@ -55,10 +55,7 @@
                 
                 <q-footer elevated class="bg-grey-8 text-white">
                     <q-banner class="bg-primary text-white" v-if="show_banner">
-                        请选择一张正确的图片
-                        <template v-slot:action>
-                            <q-btn flat color="white" label="确定" @click="hide_banner"></q-btn>
-                        </template>
+                        由于服务器性能限制，计算速度较慢，请耐心等待
                     </q-banner>
                     <q-toolbar class="bg-indigo text-white">
                         <q-btn flat dense icon="img:./resources/github_fill.svg"></q-btn>
@@ -83,27 +80,28 @@
                 image_base64: null,
                 image_model: null,
                 image_url: './resources/nature.jpeg',
-                styles: ['./resources/styles/candy.jpg',
-                './resources/styles/composition_vii.jpg',
-                './resources/styles/escher_sphere.jpg',
-                './resources/styles/feathers.jpg',
-                './resources/styles/frida_kahlo.jpg',
-                './resources/styles/la_muse.jpg',
-                './resources/styles/mosaic.jpg',
-                './resources/styles/mosaic_ducks_massimo.jpg',
-                './resources/styles/pencil.jpg',
-                './resources/styles/picasso_selfport1907.jpg',
-                './resources/styles/rain_princess.jpg',
-                './resources/styles/Robert_Delaunay,_1906,_Portrait.jpg',
-                './resources/styles/seated-nude.jpg',
-                './resources/styles/shipwreck.jpg',
-                './resources/styles/starry_night.jpg',
-                './resources/styles/stars2.jpg',
-                './resources/styles/strip.jpg',
-                './resources/styles/the_scream.jpg',
-                './resources/styles/udnie.jpg',
-                './resources/styles/wave.jpg',
-                './resources/styles/woman-with-hat-matisse.jpg'],
+                style_path: './resources/styles/',
+                styles: ['candy.jpg',
+                'composition_vii.jpg',
+                'escher_sphere.jpg',
+                'feathers.jpg',
+                'frida_kahlo.jpg',
+                'la_muse.jpg',
+                'mosaic.jpg',
+                'mosaic_ducks_massimo.jpg',
+                'pencil.jpg',
+                'picasso_selfport1907.jpg',
+                'rain_princess.jpg',
+                'Robert_Delaunay,_1906,_Portrait.jpg',
+                'seated-nude.jpg',
+                'shipwreck.jpg',
+                'starry_night.jpg',
+                'stars2.jpg',
+                'strip.jpg',
+                'the_scream.jpg',
+                'udnie.jpg',
+                'wave.jpg',
+                'woman-with-hat-matisse.jpg'],
                 show_banner: false
             }
             var app = new Vue({
@@ -141,13 +139,15 @@
                             this.image_url = this.image_base64
                         })
                     },
-                    upload_image: function(){
-                        this.get_base64(this.image_model).then(res => {
-                            let form = new FormData()
-                            form.append('image', res)
-                            axios.post('http://127.0.0.1:8080/upload', form).then(response =>{
-                                console.log(response)
-                            })
+                    upload_image: function(style){
+                        let form = new FormData()
+                        this.show_banner = true
+                        form.append('image', this.image_base64)
+                        form.append('style', style)
+                        axios.post('http://120.55.45.24:8080/upload', form).then(response =>{
+                            console.log(response)
+                            this.show_banner = false
+                            this.image_url = response.data
                         })
                     }
                 }
