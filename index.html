@@ -31,22 +31,23 @@
                 </q-header>
                 <q-page-container>
                     <div class="q-pa-md q-gutter-sm column fit no-wrap justify-center">
-                        <q-img class="self-center" src="./resources/nature.jpeg" spinner-color="primary" style="height: 140px; max-width: 150px"></q-img>
-                        <q-file accept="image/*" v-model="image" filled bottom-slots label="点击选择一张图片上传" counter>
+                        <q-img class="self-center" :src="image_url" spinner-color="primary" style="height: 200px; max-width: 200px"></q-img>
+                        <span>①请选择一张本地的图片用来上传</span>
+                        <q-file @input="input_image" model="image_model" accept="image/*" filled bottom-slots label="点击选择一张图片上传" counter>
                             <template v-slot:prepend>
                               <q-icon name="cloud_upload" @click.stop></q-icon>
                             </template>
                             <template v-slot:append>
-                              <q-icon name="close" @click.stop="model = null" class="cursor-pointer"></q-icon>
+                              <q-icon name="close" @click.stop="image_model= null" class="cursor-pointer"></q-icon>
                             </template>
-                    
                             <template v-slot:hint>
-                              Field hint
+                              文件大小
                             </template>
                           </q-file>
-                          <span>请从下图中选择一种样式</span>
+                          <span>②请从下图中选择一种样式</span>
                           <div class="row items-start justify-start" q-gutter-md row items-start id="style_box">
-                              <q-btn padding="none" v-for="style in styles" :icon="'img:' + style" size="100px" style="margin-right: 10px; margin-bottom: 10px" @click="change_style"></q-btn>
+                              <q-btn padding="none" v-for="style in styles" :icon="'img:' + style" size="50px" 
+                              style="margin-right: 10px; margin-bottom: 10px" @click="upload_image"></q-btn>
                               
                           </div>
                     </div>
@@ -72,21 +73,37 @@
         <script src="https://cdn.jsdelivr.net/npm/vue@^2.0.0/dist/vue.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/quasar.umd.modern.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.21/dist/lang/zh-hans.umd.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script async defer>
             Quasar.lang.set(Quasar.lang.zhHans)
+            axios.defaults.baseUrl = ''
 
             var data = {
                 visible : false,
-                image: null,
+                image_base64: null,
+                image_model: null,
+                image_url: './resources/nature.jpeg',
                 styles: ['./resources/styles/candy.jpg',
                 './resources/styles/composition_vii.jpg',
+                './resources/styles/escher_sphere.jpg',
                 './resources/styles/feathers.jpg',
+                './resources/styles/frida_kahlo.jpg',
                 './resources/styles/la_muse.jpg',
                 './resources/styles/mosaic.jpg',
+                './resources/styles/mosaic_ducks_massimo.jpg',
+                './resources/styles/pencil.jpg',
+                './resources/styles/picasso_selfport1907.jpg',
+                './resources/styles/rain_princess.jpg',
+                './resources/styles/Robert_Delaunay,_1906,_Portrait.jpg',
+                './resources/styles/seated-nude.jpg',
+                './resources/styles/shipwreck.jpg',
                 './resources/styles/starry_night.jpg',
+                './resources/styles/stars2.jpg',
+                './resources/styles/strip.jpg',
                 './resources/styles/the_scream.jpg',
                 './resources/styles/udnie.jpg',
-                './resources/styles/wave.jpg'],
+                './resources/styles/wave.jpg',
+                './resources/styles/woman-with-hat-matisse.jpg'],
                 show_banner: false
             }
             var app = new Vue({
@@ -101,6 +118,37 @@
                     },
                     hide_banner: function(){
                         this.show_banner = false
+                    },
+                    get_base64: function(file){
+                        return new Promise(function(resolve, reject){
+                            let reader = new FileReader()
+                            let img_result = ''
+                            reader.readAsDataURL(file)
+                            reader.onload = function(){
+                                img_result = reader.result
+                            }
+                            reader.onerror = function(error){
+                                reject(error)
+                            }
+                            reader.onloadend = function(){
+                                resolve(img_result)
+                            }
+                        })
+                    },
+                    input_image: function(file){
+                        this.get_base64(file).then(res => {
+                            this.image_base64 = res
+                            this.image_url = this.image_base64
+                        })
+                    },
+                    upload_image: function(){
+                        this.get_base64(this.image_model).then(res => {
+                            let form = new FormData()
+                            form.append('image', res)
+                            axios.post('http://127.0.0.1:8080/upload', form).then(response =>{
+                                console.log(response)
+                            })
+                        })
                     }
                 }
             })
